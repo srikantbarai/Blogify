@@ -14,7 +14,7 @@ const Blog = require("./models/blog");
 const app = express();
 const PORT = process.env.PORT;
 
-mongoose.connect(process.env.MONGO_URL).then(()=> console.log("MongoDB Connected"));
+mongoose.connect(process.env.MONGO_URL).then(() => console.log("MongoDB Connected")).catch(err => console.log("Mongo error",err));
 
 app.set('view engine','ejs');
 app.set('views',path.resolve("./views"));
@@ -25,7 +25,7 @@ app.use(checkForAuthenticationCookie("token"));
 app.use(express.static(path.resolve("./public")));
 
 app.get("/", async (req,res) => {
-    const allBlogs = await Blog.find({}).sort("createdAt").reverse();
+    const allBlogs = (await Blog.find({}).sort("createdAt")).reverse();
     res.render("home",{
         user : req.user,
         blogs: allBlogs
